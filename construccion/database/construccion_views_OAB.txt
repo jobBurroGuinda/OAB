@@ -1,0 +1,404 @@
+CREATE VIEW vNombreClientes AS
+
+SELECT
+
+CONCAT(c.nom_cli, " ", c.app_cli, " ", c.apm_cli) AS nombreCompleto
+
+FROM mCliente
+
+ c
+ORDER BY c.nom_cli
+;
+
+
+
+
+CREATE VIEW vDatosCliente AS
+
+SELECT
+
+c.idL_cli AS idCliente, c.nom_cli AS nombreCliente, c.app_cli AS apellidoPaterno, c.apm_cli AS apellidoMaterno,
+
+o.idC_con AS idContacto, o.tel_con AS telefono, o.mal_con AS email, o.fbk_con AS facebook
+
+FROM mCliente AS c
+
+INNER JOIN dContacto AS o ON c.idC_cli=o.idC_con
+
+ORDER BY c.nom_cli
+;
+
+
+
+
+
+CREATE VIEW `vCitaspEspecialista` AS
+
+SELECT
+
+u.nom_usu AS usuario, e.idE_esp AS idEspecialista, CONCAT(e.nom_esp, " ", e.app_esp, " ", e.apm_esp) AS especialista,
+i.idI_cta AS idCita, i.fch_cta AS fecha, hour(i.hra_cta) AS horaCita, minute(i.hra_cta) AS minutosCita,
+
+s.idS_srv AS idServicio, s.des_srv AS servicio, hour(s.dur_srv) AS horaDuracion,
+ minute(s.dur_srv) AS minutosDuracion,
+CONCAT(l.nom_cli, " ", l.app_cli, " ", l.apm_cli) AS cliente
+
+FROM dCita AS i
+
+INNER JOIN mEspecialista AS e ON i.idE_cta=e.idE_esp
+
+INNER JOIN mUsuario AS u ON e.idU_esp=u.idU_usu
+
+INNER JOIN cServicio AS s ON i.idS_cta=s.idS_srv
+
+INNER JOIN mCliente AS l ON l.idL_cli=i.idL_cta
+
+
+ORDER BY i.fch_cta ASC, i.hra_cta ASC;
+
+
+
+
+
+
+CREATE VIEW `vCitaspCliente` AS
+
+SELECT
+
+i.idI_cta AS idCita, e.idE_esp AS idEspecialista, CONCAT(e.nom_esp, " ", e.app_esp, " ", e.apm_esp) AS especialista,
+i.fch_cta AS fecha, hour(i.hra_cta) AS horaCita, minute(i.hra_cta) AS minutosCita,
+
+s.idS_srv AS idServicio, s.des_srv AS servicio, hour(s.dur_srv) AS horaDuracion,
+ minute(s.dur_srv) AS minutosDuracion,
+l.idL_cli AS idCliente, CONCAT(l.nom_cli, " ", l.app_cli, " ", l.apm_cli) AS cliente
+
+FROM dCita AS i
+
+INNER JOIN mEspecialista AS e ON i.idE_cta=e.idE_esp
+
+INNER JOIN mUsuario AS u ON e.idU_esp=u.idU_usu
+
+INNER JOIN cServicio AS s ON i.idS_cta=s.idS_srv
+
+INNER JOIN mCliente AS l ON l.idL_cli=i.idL_cta
+
+
+ORDER BY i.fch_cta ASC, i.hra_cta ASC;
+
+
+
+
+
+
+CREATE VIEW `vCitasdHoy` AS
+
+
+SELECT
+
+
+i.idI_cta AS idCita,  hour(i.hra_cta) AS horaCita, minute(i.hra_cta) AS minutosCita,
+
+ e.idE_esp AS idEspecialista, 
+CONCAT(e.nom_esp, " ", e.app_esp, " ", e.apm_esp) AS especialista,
+
+
+s.idS_srv AS idServicio, s.des_srv AS servicio, hour(s.dur_srv) AS horaDuracion,
+ minute(s.dur_srv) AS minutosDuracion,
+
+CONCAT(l.nom_cli, " ", l.app_cli, " ", l.apm_cli) AS cliente
+
+
+FROM dCita AS i
+
+
+INNER JOIN mEspecialista AS e ON i.idE_cta=e.idE_esp AND i.fch_cta=curdate()
+
+
+INNER JOIN mUsuario AS u ON e.idU_esp=u.idU_usu AND i.fch_cta=curdate()
+
+
+INNER JOIN cServicio AS s ON i.idS_cta=s.idS_srv AND i.fch_cta=curdate()
+
+
+INNER JOIN mCliente AS l ON l.idL_cli=i.idL_cta AND i.fch_cta=curdate()
+
+
+
+ORDER BY i.hra_cta;
+
+
+
+
+
+CREATE VIEW `vCitaspFecha` AS
+
+
+SELECT
+
+
+i.idI_cta AS idCita, i.fch_cta AS fecha,  hour(i.hra_cta) AS horaCita, minute(i.hra_cta) AS minutosCita,
+
+ e.idE_esp AS idEspecialista,
+ 
+CONCAT(e.nom_esp, " ", e.app_esp, " ", e.apm_esp) AS especialista,
+
+
+s.idS_srv AS idServicio, s.des_srv AS servicio, hour(s.dur_srv) AS horaDuracion,
+ minute(s.dur_srv) AS minutosDuracion,
+
+CONCAT(l.nom_cli, " ", l.app_cli, " ", l.apm_cli) AS cliente
+
+
+FROM dCita AS i
+
+
+INNER JOIN mEspecialista AS e ON i.idE_cta=e.idE_esp
+
+
+INNER JOIN mUsuario AS u ON e.idU_esp=u.idU_usu
+
+
+INNER JOIN cServicio AS s ON i.idS_cta=s.idS_srv
+INNER JOIN mCliente AS l ON l.idL_cli=i.idL_cta
+
+
+
+ORDER BY i.hra_cta;
+
+
+
+
+CREATE VIEW `vUsuariosAdmin` AS
+
+SELECT
+
+a.idA_adm AS idAdmin, a.idU_adm AS idUsuario, u.nom_usu AS nomUsuario, 
+a.nom_adm AS nomAdmin, a.app_adm AS apellidoPaterno, a.apm_adm AS apellidoMaterno, p.idP_prv AS idPrivilegio, p.nom_prv AS privilegio, 
+c.idC_con AS idContacto, c.tel_con AS telefono, c.mal_con AS email, c.fbk_con
+
+AS facebook 
+FROM mUsuario AS u 
+
+INNER JOIN mAdministrador AS a ON u.idU_usu=a.idU_adm
+
+INNER JOIN cPrivilegio AS p ON p.idP_prv=u.idP_usu
+INNER JOIN dContacto AS c ON c.idC_con=a.idC_adm
+
+ORDER BY a.idA_adm;
+
+
+
+
+
+CREATE VIEW `vUsuariosGerente_A` AS
+
+SELECT
+
+g.idG_gte AS idGerente, u.idU_usu AS idUsuario, u.nom_usu AS nomUsuario, 
+g.nom_gte AS nomGerente, g.app_gte AS apellidoPaterno, g.apm_gte AS apellidoMaterno, p.idP_prv AS idPrivilegio, p.nom_prv AS privilegio,
+c.idC_con AS idContacto, c.tel_con AS telefono, c.mal_con AS email, c.fbk_con
+
+AS facebook 
+ FROM mUsuario AS u 
+
+INNER JOIN mGerente AS g ON u.idU_usu=g.idU_gte
+
+INNER JOIN cPrivilegio AS p ON p.idP_prv=u.idP_usu
+INNER JOIN dContacto AS c ON c.idC_con=g.idC_gte
+ORDER BY g.idG_gte;
+
+
+
+
+CREATE VIEW `vUsuariosGerente` AS
+
+SELECT
+
+g.idG_gte AS idGerente, u.idU_usu AS idUsuario, u.nom_usu AS nomUsuario, 
+g.nom_gte AS nomGerente, g.app_gte AS apellidoPaterno, g.apm_gte AS apellidoMaterno,
+c.idC_con AS idContacto, c.tel_con AS telefono, c.mal_con AS email, c.fbk_con
+
+AS facebook 
+ FROM mUsuario AS u 
+
+INNER JOIN mGerente AS g ON u.idU_usu=g.idU_gte
+INNER JOIN dContacto AS c ON c.idC_con=g.idC_gte
+ORDER BY g.idG_gte;
+
+
+
+
+CREATE VIEW `vUsuariosRecepcionista_A` AS
+
+SELECT
+
+r.idR_rta AS idRecepcionista, u.idU_usu AS idUsuario, u.nom_usu AS nomUsuario, 
+r.nom_rta AS nomGerente, r.app_rta AS apellidoPaterno, r.apm_rta AS apellidoMaterno, p.idP_prv AS idPrivilegio, p.nom_prv AS privilegio,
+c.idC_con AS idContacto, c.tel_con AS telefono, c.mal_con AS email, c.fbk_con
+
+AS facebook 
+ FROM mUsuario AS u 
+
+INNER JOIN mRecepcionista AS r ON u.idU_usu=r.idU_rta
+INNER JOIN cPrivilegio AS p ON p.idP_prv=u.idP_usu
+INNER JOIN dContacto AS c ON c.idC_con=r.idC_rta
+ORDER BY r.idR_rta;
+
+
+
+
+
+CREATE VIEW `vUsuariosEspecialista_A` AS
+
+SELECT
+
+e.idE_esp AS idEspecialista, u.idU_usu AS idUsuario, u.nom_usu AS nomUsuario, 
+e.nom_esp AS nomEspecialista, e.app_esp AS apellidoPaterno, e.apm_esp AS apellidoMaterno, 
+hour(e.hrc_esp) AS horaComida, minute(e.hrc_esp) AS minutosComida,
+t.idT_hrt AS idHorarioTrabajo, hour(t.hre_hrt) AS HoraTrbEntrada, minute(t.hre_hrt) AS MinutosTrbEntrada, hour(t.hrs_hrt) AS HoraTrbSalida, minute(t.hrs_hrt) AS MinutosTrbSalida,
+p.idP_prv AS idPrivilegio, p.nom_prv AS privilegio,
+c.idC_con AS idContacto, c.tel_con AS telefono, c.mal_con AS email, c.fbk_con
+
+AS facebook 
+ FROM mUsuario AS u 
+
+INNER JOIN mEspecialista AS e ON u.idU_usu=e.idU_esp
+INNER JOIN cPrivilegio AS p ON p.idP_prv=u.idP_usu
+INNER JOIN dContacto AS c ON c.idC_con=e.idC_esp
+INNER JOIN dHorarioTrabajo AS t ON idT_esp=idT_hrt
+ORDER BY e.idE_esp;
+
+
+
+
+
+
+
+CREATE VIEW `vUsuariosRecepcionista` AS
+
+SELECT
+
+r.idR_rta AS idRecepcionista, u.idU_usu AS idUsuario, u.nom_usu AS nomUsuario, 
+r.nom_rta AS nomGerente, r.app_rta AS apellidoPaterno, r.apm_rta AS apellidoMaterno,
+c.idC_con AS idContacto, c.tel_con AS telefono, c.mal_con AS email, c.fbk_con
+
+AS facebook 
+ FROM mUsuario AS u 
+
+INNER JOIN mRecepcionista AS r ON u.idU_usu=r.idU_rta
+INNER JOIN dContacto AS c ON c.idC_con=r.idC_rta
+ORDER BY r.idR_rta;
+
+
+
+
+
+CREATE VIEW `vUsuariosEspecialista` AS
+
+SELECT
+
+e.idE_esp AS idEspecialista, u.idU_usu AS idUsuario, u.nom_usu AS nomUsuario, 
+e.nom_esp AS nomEspecialista, e.app_esp AS apellidoPaterno, e.apm_esp AS apellidoMaterno, 
+hour(e.hrc_esp) AS horaComida, minute(e.hrc_esp) AS minutosComida,
+t.idT_hrt AS idHorarioTrabajo, hour(t.hre_hrt) AS HoraTrbEntrada, minute(t.hre_hrt) AS MinutosTrbEntrada, hour(t.hrs_hrt) AS HoraTrbSalida, minute(t.hrs_hrt) AS MinutosTrbSalida,
+c.idC_con AS idContacto, c.tel_con AS telefono, c.mal_con AS email, c.fbk_con
+
+AS facebook 
+ FROM mUsuario AS u 
+
+INNER JOIN mEspecialista AS e ON u.idU_usu=e.idU_esp
+INNER JOIN dContacto AS c ON c.idC_con=e.idC_esp
+INNER JOIN dHorarioTrabajo AS t ON idT_esp=idT_hrt
+ORDER BY e.idE_esp;
+
+
+
+
+CREATE VIEW `vServicios` AS
+
+SELECT
+
+s.idS_srv AS idServicio, s.des_srv AS servicio, dur_srv AS duracion, e.idE_esp AS idEspecialista, CONCAT(e.nom_esp, " ", e.app_esp, " ", e.apm_esp) AS especialista
+FROM cServEspecialista AS a
+INNER JOIN cServicio AS s ON a.idS_sve=s.idS_srv
+INNER JOIN mEspecialista AS e ON a.idE_sve=e.idE_esp
+;
+
+
+
+
+
+CREATE VIEW `vDatosValidaReserva` AS
+
+SELECT
+
+e.idE_esp AS idEspecialista, CONCAT(e.nom_esp, " ", e.app_esp, " ", e.apm_esp) AS especialista,
+s.idS_srv AS idServicio, s.des_srv AS servicio, hour(s.dur_srv) AS horaDuracion, minute(s.dur_srv) AS minutosDuracion, 
+hour(t.hre_hrt) AS horaEntrada, minute(t.hre_hrt) AS minutosEntrada, hour(t.hrs_hrt) AS horaSalida, minute(t.hrs_hrt) AS minutosSalida, 
+hour(e.hrc_esp) AS horaComida, minute(e.hrc_esp) AS minutosComida
+
+FROM cServEspecialista AS v
+INNER JOIN mEspecialista AS e ON e.idE_esp=v.idE_sve
+INNER JOIN cServicio AS s ON s.idS_srv=v.idS_sve
+INNER JOIN dHorarioTrabajo AS t ON t.idT_hrt=e.idT_esp
+;
+
+
+
+
+
+SELECT hora FROM verificarDisponibilidad 
+WHERE 
+(fechaCita = '')
+
+AND
+
+(horaCita>=horaEntrada  AND  ((horaCita+duracionCita)<=horaSalida)) 
+
+AND
+
+ (
+((horaCita<horaComida) AND ((horaCita+duracion)<horaComida) )      OR
+((horaCita<horaComida) AND (horaCita>=(horaComida+1)))
+ ) 
+
+AND
+
+ (
+(((horaCita+duracionCita)<=horaCitaProgramada)   AND   (horaCita<(horaCita+duracionCita)))      OR
+((horaCita>=(horaCitaProgramada+duracionCitaProgr))   AND   ((horaCita+duracionCita)>horaCita))
+ )
+;
+
+
+
+CREATE VIEW verificarDisponibilidad AS
+SELECT
+i.fch_cta AS fechaCita, i.hra_cta AS citaProgramada, s.dur_srv AS duracionCitaProgramada, e.hrc_esp AS horaComida, 
+t.hre_hrt AS horaEntrada, t.hrs_hrt AS horaSalida, x.hra_cth AS horaCita
+
+FROM dCita AS i
+INNER JOIN cServicio AS s ON i.idS_cta=s.idS_srv
+INNER JOIN mEspecialista AS e ON e.idE_esp=i.idE_cta
+INNER JOIN dHorarioTrabajo AS t ON t.idT_hrt=e.idT_esp
+INNER JOIN chorasLaborales AS x ON idX_cth=idX_cth
+;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

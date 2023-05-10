@@ -1,0 +1,21 @@
+CREATE VIEW daHospitales AS SELECT
+h.id_hos, 
+dom.col_dom, dom.cll_dom, dom.nex_dom, m.nom_mun, e.nom_est
+FROM cEstado AS e
+INNER JOIN cMunicipio AS m ON m.id_est=e.id_est
+INNER JOIN cDomicilio AS dom ON m.id_mun=dom.id_mun
+INNER JOIN mHospital AS h ON dom.id_dom=h.id_dom
+;
+
+CREATE VIEW dDentistas AS SELECT
+den.id_den, den.nom_den, den.ape_den, den.clp_den, esp.nom_esp, den.ntl_den, fna_den,
+e.nom_est, m.nom_mun, dom.col_dom, dom.cll_dom, dom.nex_dom, dom.nin_dom,
+h.id_hos, CONCAT('Colonia: ', h.col_dom, ', Calle: ', h.cll_dom, ' #', h.nex_dom) AS Hospital
+
+FROM cEstado AS e
+INNER JOIN cMunicipio AS m ON m.id_est=e.id_est
+INNER JOIN cDomicilio AS dom ON m.id_mun=dom.id_mun
+INNER JOIN mDentista AS den ON den.id_dom=dom.id_dom
+INNER JOIN cEspecialidad AS esp ON esp.id_esp=den.id_esp
+INNER JOIN daHospitales AS h ON h.id_hos=den.id_hos
+;

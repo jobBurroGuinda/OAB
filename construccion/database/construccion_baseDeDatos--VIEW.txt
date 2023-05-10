@@ -1,0 +1,131 @@
+                      Consulta de los bienes dados de alta
+
+CREATE VIEW DBienes AS
+SELECT
+b.id_ben, b.cbm_ben, b.des_ben, m.nom_mrc, m.mlo_mrc, b.nse_ben,
+u.edi_ubi, u.nvl_ubi, u.lcl_ubi, u.dep_ubi, a.prs_asg, a.fas_arg,
+CONCAT(  (year(curdate())-year(a.fas_arg)) - (right(curdate(),5)<right(a.fas_arg,5)),   ' años') AS ant_cbi,
+d.val_det, d.dls_det
+
+FROM MBien AS b
+INNER JOIN CEstado AS e ON e.id_est=1 AND b.id_est=e.id_est
+INNER JOIN CDetalles AS d ON e.id_est=1 AND b.id_est=e.id_est AND b.id_det=d.id_det
+INNER JOIN CMarca AS m ON e.id_est=1 AND b.id_est=e.id_est AND b.id_mrc=m.id_mrc
+INNER JOIN CAsignacion AS a ON e.id_est=1 AND b.id_est=e.id_est AND a.id_ben=b.id_ben
+INNER JOIN CUbicacion AS u ON e.id_est=1 AND b.id_est=e.id_est AND a.id_ubi=u.id_ubi AND a.id_ben=b.id_ben
+
+ORDER BY b.des_ben, m.nom_mrc, m.mlo_mrc DESC
+;
+
+
+CREATE VIEW nombres AS
+SELECT DISTINCT
+n.id_nom, r.rfc_rfc, nom_nom
+
+FROM nomPersona AS n
+INNER JOIN rfcPersona AS r ON r.id_rfc=n.id_rfc
+
+
+
+                      Consulta de los bienes dados de baja         
+
+CREATE VIEW DBajas AS
+SELECT
+b.id_ben, b.cbm_ben, b.des_ben, m.nom_mrc, m.mlo_mrc, b.nse_ben,
+u.edi_ubi, u.nvl_ubi, u.lcl_ubi, u.dep_ubi, a.prs_asg, b.fbj_ben,
+CONCAT(  (year(curdate())-year(b.fbj_ben)) - (right(curdate(),5)<right(b.fbj_ben,5)),   ' años') AS ant_cbj,
+d.val_det, d.dls_det
+
+FROM MBien AS b
+INNER JOIN CEstado AS e ON e.id_est=2 AND b.id_est=e.id_est
+INNER JOIN CDetalles AS d ON e.id_est=2 AND b.id_est=e.id_est AND b.id_det=d.id_det
+INNER JOIN CMarca AS m ON e.id_est=2 AND b.id_est=e.id_est AND b.id_mrc=m.id_mrc
+INNER JOIN CAsignacion AS a ON e.id_est=2 AND b.id_est=e.id_est AND a.id_ben=b.id_ben
+INNER JOIN CUbicacion AS u ON e.id_est=2 AND b.id_est=e.id_est AND a.id_ubi=u.id_ubi AND a.id_ben=b.id_ben
+
+ORDER BY b.des_ben, m.nom_mrc, m.mlo_mrc DESC
+;
+
+
+                      Consulta de los usuarios        
+
+CREATE VIEW vPregResp AS
+SELECT
+p.pre_prg, r.res_rta
+
+FROM CPregunta AS p
+INNER JOIN CRespuesta AS r ON p.id_rta=r.id_rta
+
+ORDER BY p.id_prg
+;
+
+
+CREATE VIEW DPrgRpasw AS
+SELECT
+pr.pre_prg, re.res_rta, u.psw_usu
+
+FROM MUsuario AS u
+INNER JOIN CPregunta AS pr ON pr.id_usu=u.id_usu
+INNER JOIN CRespuesta AS re ON pr.id_rta=re.id_rta
+
+ORDER BY pr.id_prg
+;
+
+
+SELECT hora FROM verificarDisponibilidad 
+WHERE 
+(fechaCita = '')
+
+AND
+
+(horaCita>=horaEntrada  AND  ((horaCita+duracionCita)<=horaSalida)) 
+
+AND
+
+ (
+((horaCita<horaComida) AND ((horaCita+duracion)<horaComida) )      OR
+((horaCita<horaComida) AND (horaCita>=(horaComida+1)))
+ ) 
+
+AND
+
+ (
+(((horaCita+duracionCita)<=horaCitaProgramada)   AND   (horaCita<(horaCita+duracionCita)))      OR
+((horaCita>=(horaCitaProgramada+duracionCitaProgr))   AND   ((horaCita+duracionCita)>horaCita))
+ )
+;
+
+
+
+CREATE VIEW verificarDisponibilidad AS
+SELECT
+i.fch_cta AS fechaCita, i.hra_cta AS citaProgramada, s.dur_srv AS duracionCitaProgramada, e.hrc_esp AS horaComida, 
+t.hre_hrt AS horaEntrada, t.hrs_hrt AS horaSalida, x.hrs_cth AS hora
+
+FROM mCita AS i
+INNER JOIN cServicio AS s ON idS_cta=idS_srv
+INNER JOIN mEspecialista AS e ON idE_esp=idE
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

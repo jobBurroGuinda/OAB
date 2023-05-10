@@ -1,0 +1,21 @@
+
+
+---------------------------------------------Registrar administrador-----------------------------------------
+
+INSERT INTO mUsuario (nom_usu, psw_usu, idP_usu) values ("jobAdmin", password("semeolvido"), 3);
+
+SELECT @lastU := LAST_INSERT_ID();
+
+INSERT INTO dContacto (tel_con, mal_con, fbk_con) values (4432540800, "america_job@hotmail.com", "Job Salinas Pds");
+
+SELECT @lastC := LAST_INSERT_ID();
+
+INSERT INTO mAdministrador (nom_adm, app_adm, apm_adm, idU_adm, idC_adm) values ("Job", "Salinas", "Hernandez", @lastU, @lastC);
+
+
+
+
+
+
+
+

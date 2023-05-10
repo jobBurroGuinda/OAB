@@ -1,0 +1,37 @@
+
+
+---------------------------------------------Registrar especialista-----------------------------------------
+
+INSERT INTO mUsuario (nom_usu, psw_usu, idP_usu) values ("Jitomata", password("jitomata"), 2);
+
+SELECT @lastU := LAST_INSERT_ID();
+
+INSERT INTO dContacto (tel_con, mal_con, fbk_con) values (4438345292, "mate@recepcionistas.mx", "Jitomatita");
+
+SELECT @lastC := LAST_INSERT_ID();
+
+INSERT INTO dHorarioTrabajo (hre_hrt, hrs_hrt) values ('12:00:00', '20:00:00');
+
+SELECT @lastT := LAST_INSERT_ID();
+
+INSERT INTO mEspecialista (nom_esp, app_esp, apm_esp, hrc_esp, idU_esp, idC_esp, idT_esp) values ("Jitomata", "Perejila", "Soto", '13:30:00', @lastU, @lastC, @lastT);
+
+SELECT @lastE := LAST_INSERT_ID();
+
+
+INSERT INTO cServEspecialista (idS_sve, idE_sve) values (1, @lastE), (3, @lastE);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

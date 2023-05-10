@@ -1,0 +1,27 @@
+INSERT INTO dContacto (tel_con, mal_con, fbk_con) values (2133435292, "logo.foco@gmail.mx", "Meni Coto Leno");
+
+SELECT @lastC := LAST_INSERT_ID();
+
+INSERT INTO mCliente (nom_cli, app_cli, apm_cli, idC_cli) values ("Karen", "Canchola", "Tuxtla", @lastC);
+
+
+INSERT INTO dContacto (tel_con, mal_con, fbk_con) values (3947228402, "mkw_23@gmail.mx", "casmk");
+
+SELECT @lastC := LAST_INSERT_ID();
+
+INSERT INTO mCliente (nom_cli, app_cli, apm_cli, idC_cli) values ("Itzigueri", "Holanda", "Kon", @lastC);
+
+
+INSERT INTO dContacto (tel_con, mal_con, fbk_con) values (341455292, "logss_o9ui@hotmail.mx", "seer");
+
+SELECT @lastC := LAST_INSERT_ID();
+
+INSERT INTO mCliente (nom_cli, app_cli, apm_cli, idC_cli) values ("Paris", "Wifiro", "Filometa", @lastC);
+
+
+INSERT INTO dContacto (tel_con, mal_con, fbk_con) values (2145623742, "sloow@gmail.mx", "Francesita aqw1");
+
+SELECT @lastC := LAST_INSERT_ID();
+
+INSERT INTO mCliente (nom_cli, app_cli, apm_cli, idC_cli) values ("Brasil", "Hernandez", "Optom", @lastC);
+

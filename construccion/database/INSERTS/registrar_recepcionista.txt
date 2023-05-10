@@ -1,0 +1,21 @@
+
+
+---------------------------------------------Registrar recepcionista-----------------------------------------
+
+INSERT INTO mUsuario (nom_usu, psw_usu, idP_usu) values ("claudia", password("claudia"), 1);
+
+SELECT @lastU := LAST_INSERT_ID();
+
+INSERT INTO dContacto (tel_con, mal_con, fbk_con) values (4438923492, "clau@recepcionistas.mx", "Clau M");
+
+SELECT @lastC := LAST_INSERT_ID();
+
+INSERT INTO mRecepcionista (nom_rta, app_rta, apm_rta, idU_rta, idC_rta) values ("Claudia", "Gomez", "Felina", @lastU, @lastC);
+
+
+
+
+
+
+
+

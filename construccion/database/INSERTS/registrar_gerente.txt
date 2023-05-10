@@ -1,0 +1,21 @@
+
+
+---------------------------------------------Registrar gerente-----------------------------------------
+
+INSERT INTO mUsuario (nom_usu, psw_usu, idP_usu) values ("raul", password("raul"), 4);
+
+SELECT @lastU := LAST_INSERT_ID();
+
+INSERT INTO dContacto (tel_con, mal_con, fbk_con) values (4437885379, "raul@gmail.com", "Raúl Estetica");
+
+SELECT @lastC := LAST_INSERT_ID();
+
+INSERT INTO mGerente (nom_gte, app_gte, apm_gte, idU_gte, idC_gte) values ("Raul", "Mendez", "Lucio", @lastU, @lastC);
+
+
+
+
+
+
+
+
